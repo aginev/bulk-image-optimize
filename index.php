@@ -16,7 +16,7 @@ foreach ($objects as $filePath => $object) {
     $fileExt = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
 
     $skip = ['.', '..'];
-    $allowedExt = ['jpg', 'jpeg', 'png', 'gif', 'svg'];
+    $allowedExt = ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp'];
 
     if (!in_array($fileName, $skip) && in_array($fileExt, $allowedExt)) {
         $relPath = str_replace($inputPath, '', $filePath);
@@ -28,13 +28,11 @@ foreach ($objects as $filePath => $object) {
             mkdir($outputPath, 0777, true);
         }
 
-        $parts = explode(DIRECTORY_SEPARATOR, trim(str_replace($fileName, '', $filePath), DIRECTORY_SEPARATOR));
-        $baseFileName = $parts[count($parts) - 1];
-        $outputFileName = preg_replace('/\s+/', '-', $baseFileName . '-' . ($counter + 1) . '.' . $fileExt);
-
-        $outputFilePath = $outputPath . $outputFileName;
+        $outputFilePath = $outputPath . $fileName;
 
         $optimizerChain->optimize($filePath, $outputFilePath);
+
+        echo "{$counter}: {$filePath} => {$outputFilePath}" . PHP_EOL;
 
         $counter++;
     }
